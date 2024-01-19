@@ -79,7 +79,7 @@
     #define X_MAX_PIN                E0_DIAG_PIN  // M4-STOP
   #endif
 #else
-  #define X_STOP_PIN                  X_DIAG_PIN  // M1-STOP
+  #define X_STOP_PIN                  PF4  // M1-STOP
 #endif
 
 #ifdef Y_STALL_SENSITIVITY
@@ -94,7 +94,7 @@
     #define Y_MIN_PIN                 Y_DIAG_PIN  // M2-STOP
   #endif
   #ifndef Y_MAX_PIN
-    #define Y_MAX_PIN                E1_DIAG_PIN  // M5-STOP
+    #define Y_MAX_PIN                PF3  // M5-STOP
   #endif
 #else
   #define Y_STOP_PIN                  Y_DIAG_PIN  // M2-STOP
@@ -118,12 +118,15 @@
   #define Z_STOP_PIN                  Z_DIAG_PIN  // M3-STOP
 #endif
 
+
+#define Z_MAX_PIN	PF2
 //
 // Z Probe (when not Z_MIN_PIN)
 //
+#define Z_MIN_PIN	PD8
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN                   PD13  // PROBE
-  //#define Z_MIN_PROBE_PIN                 PD8   // "FAN IND" - Shared inductive probe / fan connector
+  //#define Z_MIN_PROBE_PIN                   PF1  // PROBE
+  #define Z_MIN_PROBE_PIN                 PD8   // "FAN IND" - Shared inductive probe / fan connector
 #endif
 
 //
@@ -136,7 +139,7 @@
 //
 // Filament Runout Sensor
 //
-#define FIL_RUNOUT_PIN               E0_DIAG_PIN  // M4-STOP
+#define FIL_RUNOUT_PIN               PC15
 #define FIL_RUNOUT2_PIN              E1_DIAG_PIN  // M5-STOP
 #define FIL_RUNOUT3_PIN              E2_DIAG_PIN  // M6-STOP
 
@@ -164,18 +167,18 @@
   #define Z_CS_PIN                          PB9
 #endif
 
-#define E0_STEP_PIN                         PB4   // MOTOR 4
-#define E0_DIR_PIN                          PB3
-#define E0_ENABLE_PIN                       PB6
-#ifndef E0_CS_PIN
-  #define E0_CS_PIN                         PB5
+#define Z2_STEP_PIN                         PB4   // MOTOR 4
+#define Z2_DIR_PIN                          PB3
+#define Z2_ENABLE_PIN                       PB6
+#ifndef Z2_CS_PIN
+  #define Z2_CS_PIN                         PB5
 #endif
 
-#define E1_STEP_PIN                         PG13  // MOTOR 5
-#define E1_DIR_PIN                          PG12
-#define E1_ENABLE_PIN                       PG15
-#ifndef E1_CS_PIN
-  #define E1_CS_PIN                         PG14
+#define E0_STEP_PIN                         PG13  // MOTOR 5
+#define E0_DIR_PIN                          PG12
+#define E0_ENABLE_PIN                       PG15
+#ifndef E0_CS_PIN
+  #define E0_CS_PIN                         PG14
 #endif
 
 #define E2_STEP_PIN                         PG9   // MOTOR 6
@@ -356,7 +359,7 @@
  *       (MOSI) PE14 | 6  |
  *  (SD_DETECT)  PE8 | 7  |
  *             RESET | 8  |
- *     (BEEPER)  PE7 | 9  |
+ *     (BEEPER)  PE0.007 | 9  |
  *    (BTN_ENC)  PG1 | 10 |
  *     (LCD_EN)  PG0 | 11 |
  *     (LCD_RS) PF15 | 12 |
@@ -462,3 +465,5 @@
   // Allow dedicated RGB (NeoPixel) pin to be used for a NeoPixel strip
   #define NEOPIXEL2_PIN                     PD15  // RGB
 #endif
+
+#define BEEPER_PIN	PD14
