@@ -1173,7 +1173,7 @@
 #define X_MAX_ENDSTOP_HIT_STATE LOW
 #define Y_MIN_ENDSTOP_HIT_STATE LOW
 #define Y_MAX_ENDSTOP_HIT_STATE LOW
-#define Z_MIN_ENDSTOP_HIT_STATE HIGH
+#define Z_MIN_ENDSTOP_HIT_STATE LOW
 #define Z_MAX_ENDSTOP_HIT_STATE LOW
 #define I_MIN_ENDSTOP_HIT_STATE HIGH
 #define I_MAX_ENDSTOP_HIT_STATE HIGH
@@ -1187,7 +1187,7 @@
 #define V_MAX_ENDSTOP_HIT_STATE HIGH
 #define W_MIN_ENDSTOP_HIT_STATE HIGH
 #define W_MAX_ENDSTOP_HIT_STATE HIGH
-#define Z_MIN_PROBE_ENDSTOP_HIT_STATE HIGH
+#define Z_MIN_PROBE_ENDSTOP_HIT_STATE LOW
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
 // This will remove the need to poll the interrupt pins, saving many CPU cycles.
@@ -1242,7 +1242,7 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 550, 450, 55, 70 }
+#define DEFAULT_MAX_FEEDRATE          { 550, 450, 40, 70 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -1565,7 +1565,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -28, 0, 0 }
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
 #define PROBING_TOOL 0
@@ -1654,7 +1654,7 @@
 #define Z_PROBE_ERROR_TOLERANCE     3 // (mm) Tolerance for early trigger (<= -probe.offset.z + ZPET)
 //#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -1 // (mm) Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -2 // (mm) Farthest distance below the trigger-point to go before stopping
 
 // For M851 provide ranges for adjusting the X, Y, and Z probe offsets
 //#define PROBE_OFFSET_XMIN -50   // (mm)
@@ -1809,11 +1809,19 @@
 #define Y_BED_SIZE 300
 
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.
-#define X_MIN_POS 0
-#define Y_MIN_POS 0
+//#ifndef BED_CENTER_AT_0_0
+//  #define X_MIN_POS 0
+//  #define Y_MIN_POS 0
+//  #define Z_MIN_POS 0
+//  #define X_MAX_POS X_BED_SIZE
+//  #define Y_MAX_POS Y_BED_SIZE
+//#else
+#define X_MIN_POS -X_BED_SIZE/2
+#define Y_MIN_POS -Y_BED_SIZE/2
 #define Z_MIN_POS 0
-#define X_MAX_POS X_BED_SIZE
-#define Y_MAX_POS Y_BED_SIZE
+#define X_MAX_POS X_BED_SIZE/2
+#define Y_MAX_POS Y_BED_SIZE/2
+//#endif
 #define Z_MAX_POS 400
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
@@ -2025,7 +2033,7 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
+#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
 
@@ -2040,7 +2048,7 @@
  * these options to restore the prior leveling state or to always enable
  * leveling immediately after G28.
  */
-//#define RESTORE_LEVELING_AFTER_G28
+#define RESTORE_LEVELING_AFTER_G28
 //#define ENABLE_LEVELING_AFTER_G28
 
 /**
@@ -2072,7 +2080,7 @@
    */
   #define ENABLE_LEVELING_FADE_HEIGHT
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
-    #define DEFAULT_LEVELING_FADE_HEIGHT 10.0 // (mm) Default fade height.
+    #define DEFAULT_LEVELING_FADE_HEIGHT 5.0 // (mm) Default fade height.
   #endif
 
   /**
@@ -2102,7 +2110,7 @@
 #if ANY(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 3
+  #define GRID_MAX_POINTS_X 7
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -2112,13 +2120,13 @@
 
     // Beyond the probed grid, continue the implied tilt?
     // Default is to maintain the height of the nearest edge.
-    //#define EXTRAPOLATE_BEYOND_GRID
+    #define EXTRAPOLATE_BEYOND_GRID
 
     //
     // Subdivision of the grid by Catmull-Rom method.
     // Synthesizes intermediate points to produce a more detailed mesh.
     //
-    //#define ABL_BILINEAR_SUBDIVISION
+    #define ABL_BILINEAR_SUBDIVISION
     #if ENABLED(ABL_BILINEAR_SUBDIVISION)
       // Number of subdivisions between probe points
       #define BILINEAR_SUBDIVISIONS 3
@@ -2737,13 +2745,17 @@
 // Tone queue size, used to keep beeps from blocking execution.
 // Default is 4, or override here. Costs 4 bytes of SRAM per entry.
 //
-#define TONE_QUEUE_LENGTH 4
+#define TONE_QUEUE_LENGTH 8
 
 //
 // A sequence of tones to play at startup, in pairs of tone (Hz), duration (ms).
 // Silence in-between tones.
 //
 #define STARTUP_TUNE { 698, 300, 0, 50, 523, 50, 0, 25, 494, 50, 0, 25, 523, 100, 0, 50, 554, 300, 0, 100, 523, 300 }
+// Hooray for boobies
+// NOTE: STARTUP_TUNE does not accept decimal places.. TODO get STARTUP_TUNE to accept arbitrary commands... this way we fix this and can also have a light show XD:
+//#define STARTUP_TUNE {	261.63, 370,	0, 30,	349.23, 300,	0, 100,	440, 300,	0, 100,	523.25, 575,	0, 25,	447.30, 250,	523.25, 750}
+//#define STARTUP_TUNE { 261, 370,       0, 30,  349, 300,       0, 100, 440, 300,       0, 100, 523, 575,       0, 25,  447, 250,       523, 750}
 
 //=============================================================================
 //======================== LCD / Controller Selection =========================

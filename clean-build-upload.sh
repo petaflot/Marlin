@@ -13,5 +13,8 @@ env=STM32H723ZE_btt	# MANTA M8P
 platformio run --target clean -e $env && 
 platformio run -e $env &&
 #platformio run --target upload -e $env
+
+sudo mount -o uid=meta /dev/sdd1 /mnt/sd &&
 mv ./.pio/build/${env}/firmware.bin /mnt/sd &&
-ls -l /mnt/sd/*
+ls -l /mnt/sd/* &&
+sudo umount /mnt/sd

@@ -115,7 +115,7 @@
     #define Z_MAX_PIN                E2_DIAG_PIN  // M6-STOP
   #endif
 #else
-  #define Z_STOP_PIN                  Z_DIAG_PIN  // M3-STOP
+  #define Z_STOP_PIN                  PD8
 #endif
 
 
@@ -123,7 +123,7 @@
 //
 // Z Probe (when not Z_MIN_PIN)
 //
-#define Z_MIN_PIN	PD8
+//#define Z_MIN_PIN	PD8
 #ifndef Z_MIN_PROBE_PIN
   //#define Z_MIN_PROBE_PIN                   PF1  // PROBE
   #define Z_MIN_PROBE_PIN                 PD8   // "FAN IND" - Shared inductive probe / fan connector
