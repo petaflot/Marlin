@@ -181,11 +181,11 @@
   #define E0_CS_PIN                         PG14
 #endif
 
-#define E2_STEP_PIN                         PG9   // MOTOR 6
-#define E2_DIR_PIN                          PD7
-#define E2_ENABLE_PIN                       PG11
-#ifndef E2_CS_PIN
-  #define E2_CS_PIN                         PG10
+#define E1_STEP_PIN                         PG9   // MOTOR 6
+#define E1_DIR_PIN                          PD7
+#define E1_ENABLE_PIN                       PG11
+#ifndef E1_CS_PIN
+  #define E1_CS_PIN                         PG10
 #endif
 
 #define E3_STEP_PIN                         PD4   // MOTOR 7
