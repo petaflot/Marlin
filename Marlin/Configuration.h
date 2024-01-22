@@ -214,15 +214,6 @@
 // Generally expected filament diameter (1.75, 2.85, 3.0, ...). Used for Volumetric, Filament Width Sensor, etc.
 #define DEFAULT_NOMINAL_FILAMENT_DIA 1.75
 
-// For Cyclops or any "multi-extruder" that shares a single nozzle.
-//#define SINGLENOZZLE
-
-// Save and restore temperature and fan speed on tool-change.
-// Set standby for the unselected tool with M104/106/109 T...
-#if ENABLED(SINGLENOZZLE)
-  //#define SINGLENOZZLE_STANDBY_TEMP
-  //#define SINGLENOZZLE_STANDBY_FAN
-#endif
 
 // A dual extruder that uses a single stepper motor
 //#define SWITCHING_EXTRUDER
@@ -348,7 +339,7 @@
  *   - This implementation supports up to two mixing extruders.
  *   - Enable DIRECT_MIXING_IN_G1 for M165 and mixing in G1 (from Pia Taubert's reference implementation).
  */
-#define MIXING_EXTRUDER
+//#define MIXING_EXTRUDER
 #if ENABLED(MIXING_EXTRUDER)
   #define MIXING_STEPPERS 2        // Number of steppers in your mixing extruder
   //#define MIXING_VIRTUAL_TOOLS 16  // Use the Virtual Tool method with M163 and M164
@@ -718,7 +709,7 @@
   // For one fan and multiple hotends MPC needs to know how to apply the fan cooling effect.
   #if ENABLED(MPC_INCLUDE_FAN)
     //#define MPC_FAN_0_ALL_HOTENDS
-    //#define MPC_FAN_0_ACTIVE_HOTEND
+    #define MPC_FAN_0_ACTIVE_HOTEND
   #endif
 
   // Filament Heat Capacity (joules/kelvin/mm)
@@ -894,220 +885,7 @@
 //#define COREZX
 //#define COREZY
 
-//
-// MarkForged Kinematics
-// See https://reprap.org/forum/read.php?152,504042
-//
-//#define MARKFORGED_XY
-//#define MARKFORGED_YX
-#if ANY(MARKFORGED_XY, MARKFORGED_YX)
-  //#define MARKFORGED_INVERSE  // Enable for an inverted Markforged kinematics belt path
-#endif
 
-// Enable for a belt style printer with endless "Z" motion
-//#define BELTPRINTER
-
-// Enable for Polargraph Kinematics
-//#define POLARGRAPH
-#if ENABLED(POLARGRAPH)
-  #define POLARGRAPH_MAX_BELT_LEN  1035.0 // (mm) Belt length at full extension. Override with M665 H.
-  #define DEFAULT_SEGMENTS_PER_SECOND 5   // Move segmentation based on duration
-  #define PEN_UP_DOWN_MENU                // Add "Pen Up" and "Pen Down" to the MarlinUI menu
-#endif
-
-// @section delta
-
-// Enable for DELTA kinematics and configure below
-//#define DELTA
-#if ENABLED(DELTA)
-
-  // Make delta curves from many straight lines (linear interpolation).
-  // This is a trade-off between visible corners (not enough segments)
-  // and processor overload (too many expensive sqrt calls).
-  #define DEFAULT_SEGMENTS_PER_SECOND 200
-
-  // After homing move down to a height where XY movement is unconstrained
-  //#define DELTA_HOME_TO_SAFE_ZONE
-
-  // Delta calibration menu
-  // Add three-point calibration to the MarlinUI menu.
-  // See http://minow.blogspot.com/index.html#4918805519571907051
-  //#define DELTA_CALIBRATION_MENU
-
-  // G33 Delta Auto-Calibration. Enable EEPROM_SETTINGS to store results.
-  //#define DELTA_AUTO_CALIBRATION
-
-  #if ENABLED(DELTA_AUTO_CALIBRATION)
-    // Default number of probe points : n*n (1 -> 7)
-    #define DELTA_CALIBRATION_DEFAULT_POINTS 4
-  #endif
-
-  #if ANY(DELTA_AUTO_CALIBRATION, DELTA_CALIBRATION_MENU)
-    // Step size for paper-test probing
-    #define PROBE_MANUALLY_STEP 0.05      // (mm)
-  #endif
-
-  // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define PRINTABLE_RADIUS       140.0    // (mm)
-
-  // Maximum reachable area
-  #define DELTA_MAX_RADIUS       140.0    // (mm)
-
-  // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 250.0        // (mm)
-
-  // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 250.00             // (mm) Get this value from G33 auto calibrate
-
-  #define DELTA_ENDSTOP_ADJ { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
-
-  // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 124.0              // (mm) Get this value from G33 auto calibrate
-
-  // Trim adjustments for individual towers
-  // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
-  // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0, 0.0, 0.0 } // (mm) Get these values from G33 auto calibrate
-
-  // Delta radius and diagonal rod adjustments
-  //#define DELTA_RADIUS_TRIM_TOWER       { 0.0, 0.0, 0.0 } // (mm)
-  //#define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 } // (mm)
-#endif
-
-// @section scara
-
-/**
- * MORGAN_SCARA was developed by QHARLEY in South Africa in 2012-2013.
- * Implemented and slightly reworked by JCERNY in June, 2014.
- *
- * Mostly Printed SCARA is an open source design by Tyler Williams. See:
- *   https://www.thingiverse.com/thing:2487048
- *   https://www.thingiverse.com/thing:1241491
- */
-//#define MORGAN_SCARA
-//#define MP_SCARA
-#if ANY(MORGAN_SCARA, MP_SCARA)
-  // If movement is choppy try lowering this value
-  #define DEFAULT_SEGMENTS_PER_SECOND 200
-
-  // Length of inner and outer support arms. Measure arm lengths precisely.
-  #define SCARA_LINKAGE_1 150       // (mm)
-  #define SCARA_LINKAGE_2 150       // (mm)
-
-  // SCARA tower offset (position of Tower relative to bed zero position)
-  // This needs to be reasonably accurate as it defines the printbed position in the SCARA space.
-  #define SCARA_OFFSET_X  100       // (mm)
-  #define SCARA_OFFSET_Y  -56       // (mm)
-
-  #if ENABLED(MORGAN_SCARA)
-
-    //#define DEBUG_SCARA_KINEMATICS
-    #define FEEDRATE_SCALING        // Convert XY feedrate from mm/s to degrees/s on the fly
-
-    // Radius around the center where the arm cannot reach
-    #define MIDDLE_DEAD_ZONE_R   0  // (mm)
-
-    #define THETA_HOMING_OFFSET  0  // Calculated from Calibration Guide and M360 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
-    #define PSI_HOMING_OFFSET    0  // Calculated from Calibration Guide and M364 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
-
-  #elif ENABLED(MP_SCARA)
-
-    #define SCARA_OFFSET_THETA1  12 // degrees
-    #define SCARA_OFFSET_THETA2 131 // degrees
-
-  #endif
-
-#endif
-
-// @section tpara
-
-// Enable for TPARA kinematics and configure below
-//#define AXEL_TPARA
-#if ENABLED(AXEL_TPARA)
-  #define DEBUG_TPARA_KINEMATICS
-  #define DEFAULT_SEGMENTS_PER_SECOND 200
-
-  // Length of inner and outer support arms. Measure arm lengths precisely.
-  #define TPARA_LINKAGE_1 120       // (mm)
-  #define TPARA_LINKAGE_2 120       // (mm)
-
-  // SCARA tower offset (position of Tower relative to bed zero position)
-  // This needs to be reasonably accurate as it defines the printbed position in the SCARA space.
-  #define TPARA_OFFSET_X    0       // (mm)
-  #define TPARA_OFFSET_Y    0       // (mm)
-  #define TPARA_OFFSET_Z    0       // (mm)
-
-  #define FEEDRATE_SCALING        // Convert XY feedrate from mm/s to degrees/s on the fly
-
-  // Radius around the center where the arm cannot reach
-  #define MIDDLE_DEAD_ZONE_R   0  // (mm)
-
-  // Calculated from Calibration Guide and M360 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
-  #define THETA_HOMING_OFFSET  0
-  #define PSI_HOMING_OFFSET    0
-#endif
-
-// @section polar
-
-/**
- * POLAR Kinematics
- *  developed by Kadir ilkimen for PolarBear CNC and babyBear
- *  https://github.com/kadirilkimen/Polar-Bear-Cnc-Machine
- *  https://github.com/kadirilkimen/babyBear-3D-printer
- *
- * A polar machine can have different configurations.
- * This kinematics is only compatible with the following configuration:
- *        X : Independent linear
- *   Y or B : Polar
- *        Z : Independent linear
- *
- * For example, PolarBear has CoreXZ plus Polar Y or B.
- *
- * Motion problem for Polar axis near center / origin:
- *
- * 3D printing:
- * Movements very close to the center of the polar axis take more time than others.
- * This brief delay results in more material deposition due to the pressure in the nozzle.
- *
- * Current Kinematics and feedrate scaling deals with this by making the movement as fast
- * as possible. It works for slow movements but doesn't work well with fast ones. A more
- * complicated extrusion compensation must be implemented.
- *
- * Ideally, it should estimate that a long rotation near the center is ahead and will cause
- * unwanted deposition. Therefore it can compensate the extrusion beforehand.
- *
- * Laser cutting:
- * Same thing would be a problem for laser engraving too. As it spends time rotating at the
- * center point, more likely it will burn more material than it should. Therefore similar
- * compensation would be implemented for laser-cutting operations.
- *
- * Milling:
- * This shouldn't be a problem for cutting/milling operations.
- */
-//#define POLAR
-#if ENABLED(POLAR)
-  #define DEFAULT_SEGMENTS_PER_SECOND 180   // If movement is choppy try lowering this value
-  #define PRINTABLE_RADIUS 82.0f            // (mm) Maximum travel of X axis
-
-  // Movements fall inside POLAR_FAST_RADIUS are assigned the highest possible feedrate
-  // to compensate unwanted deposition related to the near-origin motion problem.
-  #define POLAR_FAST_RADIUS 3.0f            // (mm)
-
-  // Radius which is unreachable by the tool.
-  // Needed if the tool is not perfectly aligned to the center of the polar axis.
-  #define POLAR_CENTER_OFFSET 0.0f          // (mm)
-
-  #define FEEDRATE_SCALING                  // Convert XY feedrate from mm/s to degrees/s on the fly
-#endif
-
-// @section machine
-
-// Articulated robot (arm). Joints are directly mapped to axes with no kinematics.
-//#define ARTICULATED_ROBOT_ARM
-
-// For a hot wire cutter with parallel horizontal axes (X, I) where the heights of the two wire
-// ends are controlled by parallel axes (Y, J). Joints are directly mapped to axes (no kinematics).
-//#define FOAMCUTTER_XYUV
 
 //===========================================================================
 //============================== Endstop Settings ===========================
@@ -1242,11 +1020,11 @@
  * Override with M203
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_FEEDRATE          { 550, 450, 40, 40 }
+#define DEFAULT_MAX_FEEDRATE          { 550, 450, 60, 40 }
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
-  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 80, 150 } // ...or, set your own edit limits
+  #define MAX_FEEDRATE_EDIT_VALUES    { 600, 600, 850, 150 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1259,7 +1037,7 @@
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
-  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 300, 20000 } // ...or, set your own edit limits
+  #define MAX_ACCEL_EDIT_VALUES       { 6000, 6000, 400, 20000 } // ...or, set your own edit limits
 #endif
 
 /**
@@ -1565,17 +1343,17 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { -28, 0, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -28, 0, -.8 }
 
 // Enable and set to use a specific tool for probing. Disable to allow any tool.
-#define PROBING_TOOL 0
+//#define PROBING_TOOL 0
 #ifdef PROBING_TOOL
   //#define PROBE_TOOLCHANGE_NO_MOVE  // Suppress motion on probe tool-change
 #endif
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define PROBING_MARGIN 10
+//#define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_FEEDRATE (133*60)
@@ -1631,7 +1409,7 @@
  * A total of 2 does fast/slow probes with a weighted average.
  * A total of 3 or more adds more slow probes, taking the average.
  */
-//#define MULTIPLE_PROBING 2
+#define MULTIPLE_PROBING 3
 //#define EXTRA_PROBING    1
 
 /**
@@ -1648,11 +1426,11 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // (mm) Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE    0 // (mm) Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  2 // (mm) Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     1 // (mm) Z Clearance between multiple probes
 #define Z_PROBE_ERROR_TOLERANCE     1 // (mm) Tolerance for early trigger (<= -probe.offset.z + ZPET)
-//#define Z_AFTER_PROBING           5 // (mm) Z position after probing is done
+#define Z_AFTER_PROBING             5 // (mm) Z position after probing is done
 
 #define Z_PROBE_LOW_POINT          -1 // (mm) Farthest distance below the trigger-point to go before stopping
 
@@ -1687,14 +1465,14 @@
 #endif
 //#define PROBING_FANS_OFF          // Turn fans off when probing
 //#define PROBING_ESTEPPERS_OFF     // Turn all extruder steppers off when probing
-//#define PROBING_STEPPERS_OFF      // Turn all steppers off (unless needed to hold position) when probing (including extruders)
+#define PROBING_STEPPERS_OFF      // Turn all steppers off (unless needed to hold position) when probing (including extruders)
 //#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
 
 // Require minimum nozzle and/or bed temperature for probing
 //#define PREHEAT_BEFORE_PROBING
 #if ENABLED(PREHEAT_BEFORE_PROBING)
-  #define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
-  #define PROBING_BED_TEMP     50
+  //#define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
+  #define PROBING_BED_TEMP     70
 #endif
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -1728,12 +1506,12 @@
 // @section extruder
 
 //#define DISABLE_E               // Disable the extruder when not stepping
-//#define DISABLE_OTHER_EXTRUDERS   // Keep only the active extruder enabled
+#define DISABLE_OTHER_EXTRUDERS   // Keep only the active extruder enabled
 
 // @section motion
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define NVERT_X_DIR false
+#define INVERT_X_DIR false
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR false
 //#define INVERT_I_DIR false
@@ -1808,20 +1586,23 @@
 #define X_BED_SIZE 300
 #define Y_BED_SIZE 300
 
+// The center of the bed is at (X=0, Y=0)
+#define BED_CENTER_AT_0_0
+
 // Travel limits (linear=mm, rotational=°) after homing, corresponding to endstop positions.
-//#ifndef BED_CENTER_AT_0_0
-//  #define X_MIN_POS 0
-//  #define Y_MIN_POS 0
-//  #define Z_MIN_POS 0
-//  #define X_MAX_POS X_BED_SIZE
-//  #define Y_MAX_POS Y_BED_SIZE
-//#else
-#define X_MIN_POS -X_BED_SIZE/2
-#define Y_MIN_POS -Y_BED_SIZE/2
-#define Z_MIN_POS 0
-#define X_MAX_POS X_BED_SIZE/2
-#define Y_MAX_POS Y_BED_SIZE/2
-//#endif
+#ifndef BED_CENTER_AT_0_0
+  #define X_MIN_POS 0
+  #define Y_MIN_POS 0
+  #define Z_MIN_POS 0
+  #define X_MAX_POS X_BED_SIZE
+  #define Y_MAX_POS Y_BED_SIZE
+#else
+  #define X_MIN_POS -X_BED_SIZE/2
+  #define Y_MIN_POS -Y_BED_SIZE/2
+  #define Z_MIN_POS 0
+  #define X_MAX_POS X_BED_SIZE/2
+  #define Y_MAX_POS Y_BED_SIZE/2
+#endif
 #define Z_MAX_POS 400
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
@@ -2241,9 +2022,6 @@
 
 // @section homing
 
-// The center of the bed is at (X=0, Y=0)
-#define BED_CENTER_AT_0_0
-
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
@@ -2417,7 +2195,7 @@
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
-  #define NOZZLE_PARK_POINT { (X_MIN_POS + 10), (Y_MAX_POS - 10), 20 }
+  #define NOZZLE_PARK_POINT { (X_MAX_POS), (Y_MAX_POS), 20 }
   #define NOZZLE_PARK_MOVE          0   // Park motion: 0 = XY Move, 1 = X Only, 2 = Y Only, 3 = X before Y, 4 = Y before X
   #define NOZZLE_PARK_Z_RAISE_MIN   2   // (mm) Always raise Z by at least this distance
   #define NOZZLE_PARK_XY_FEEDRATE 100   // (mm/s) X and Y axes feedrate (also used for delta Z axis)
@@ -2531,7 +2309,7 @@
  *   M76 - Pause the print job timer
  *   M77 - Stop the print job timer
  */
-#define PRINTJOB_TIMER_AUTOSTART
+//#define PRINTJOB_TIMER_AUTOSTART
 
 // @section stats
 
@@ -2547,9 +2325,9 @@
  *
  * View the current statistics with M78.
  */
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 #if ENABLED(PRINTCOUNTER)
-  #define PRINTCOUNTER_SAVE_INTERVAL 60 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
+  #define PRINTCOUNTER_SAVE_INTERVAL 0 // (minutes) EEPROM save interval during print. A value of 0 will save stats at end of print.
 #endif
 
 // @section security
@@ -2751,7 +2529,6 @@
 // A sequence of tones to play at startup, in pairs of tone (Hz), duration (ms).
 // Silence in-between tones.
 //
-//#define STARTUP_TUNE { 698, 300, 0, 50, 523, 50, 0, 25, 494, 50, 0, 25, 523, 100, 0, 50, 554, 300, 0, 100, 523, 300 }
 // Hooray for boobies
 // NOTE: STARTUP_TUNE does not accept decimal places.. TODO get STARTUP_TUNE to accept arbitrary commands... this way we fix this and can also have a light show XD:
 //#define STARTUP_TUNE {	261.63, 370,	0, 30,	349.23, 300,	0, 100,	440, 300,	0, 100,	523.25, 575,	0, 25,	447.30, 250,	523.25, 750}
@@ -3446,7 +3223,7 @@
 
 // Set number of user-controlled fans. Disable to use all board-defined fans.
 // :[1,2,3,4,5,6,7,8]
-//#define NUM_M106_FANS 1
+#define NUM_M106_FANS 2
 
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
@@ -3529,7 +3306,7 @@
 #endif
 
 // Support for Adafruit NeoPixel LED driver
-//#define NEOPIXEL_LED
+#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
   #define NEOPIXEL_TYPE          NEO_GRBW // NEO_GRBW, NEO_RGBW, NEO_GRB, NEO_RBG, etc.
                                           // See https://github.com/adafruit/Adafruit_NeoPixel/blob/master/Adafruit_NeoPixel.h

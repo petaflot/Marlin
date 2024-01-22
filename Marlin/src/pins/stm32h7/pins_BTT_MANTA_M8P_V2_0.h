@@ -181,11 +181,11 @@
   #define E0_CS_PIN                         PG14
 #endif
 
-#define E1_STEP_PIN                         PG9   // MOTOR 6
-#define E1_DIR_PIN                          PD7
-#define E1_ENABLE_PIN                       PG11
-#ifndef E1_CS_PIN
-  #define E1_CS_PIN                         PG10
+#define E2_STEP_PIN                         PG9   // MOTOR 6
+#define E2_DIR_PIN                          PD7
+#define E2_ENABLE_PIN                       PG11
+#ifndef E2_CS_PIN
+  #define E2_CS_PIN                         PG10
 #endif
 
 #define E3_STEP_PIN                         PD4   // MOTOR 7
@@ -208,8 +208,8 @@
 #define TEMP_0_PIN                          PB0   // TH0
 #define TEMP_1_PIN                          PC5   // TH1
 #define TEMP_2_PIN                          PC4   // TH2
-#define TEMP_3_PIN                          PA7   // TH3
-#define TEMP_BED_PIN                        PB1   // TB
+//#define TEMP_3_PIN                          PA7   // TH3
+#define TEMP_BED_PIN                        PA7   // TB	- was PB1
 
 //
 // Heaters / Fans
