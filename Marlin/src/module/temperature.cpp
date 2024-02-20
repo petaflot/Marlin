@@ -832,7 +832,6 @@ volatile bool Temperature::raw_temps_ready = false;
       if (ELAPSED(ms, next_temp_ms)) {
         #if HAS_TEMP_SENSOR
           print_heater_states(heater_id < 0 ? active_extruder : (int8_t)heater_id);
-          SERIAL_EOL();
         #endif
         next_temp_ms = ms + 2000UL;
 
@@ -1177,7 +1176,6 @@ volatile bool Temperature::raw_temps_ready = false;
     if (ELAPSED(curr_time_ms, next_report_ms)) {
       next_report_ms += report_interval_ms;
       print_heater_states(e);
-      SERIAL_EOL();
     }
 
     if (!wait_for_heatup) {
@@ -4381,7 +4379,8 @@ void Temperature::isr() {
   }
 
   void Temperature::print_heater_states(const int8_t target_extruder
-    OPTARG(HAS_TEMP_REDUNDANT, const bool include_r/*=false*/)
+    OPTARG(HAS_TEMP_REDUNDANT, const bool include_r/*=false*/,
+    millis now = 0, millis residency_start_ms = -1 )
   ) {
     #if HAS_TEMP_HOTEND
       print_heater_state(H_NONE, degHotend(target_extruder), degTargetHotend(target_extruder) OPTARG(SHOW_TEMP_ADC_VALUES, rawHotendTemp(target_extruder)));
@@ -4423,7 +4422,23 @@ void Temperature::isr() {
     #if HAS_MULTI_HOTEND
       HOTEND_LOOP() s.append(F(" @"), e, ':', getHeaterPower((heater_id_t)e));
     #endif
+    if ( residency_start_ms >= 0 ) {
+      // only one of these can be enabled at a given time
+      SString<20> s(F(" W:"));
+      #if TEMP_RESIDENCY_TIME > 0
+         s += long((SEC_TO_MS(TEMP_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
+      #elif TEMP_BED_RESIDENCY_TIME > 0
+        s += long((SEC_TO_MS(TEMP_BED_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
+      #elif TEMP_CHAMBER_RESIDENCY_TIME > 0
+        s += long((SEC_TO_MS(TEMP_CHAMBER_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
+      #elif TEMP_COOLER_RESIDENCY_TIME > 0
+        s += long((SEC_TO_MS(TEMP_COOLER_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
+      #endif
+    } else {
+      s += '?';
+    }
     s.echo();
+    SERIAL_EOL();
   }
 
   #if ENABLED(AUTO_REPORT_TEMPERATURES)
@@ -4493,7 +4508,7 @@ void Temperature::isr() {
 
       bool wants_to_cool = false;
       celsius_float_t target_temp = -1.0, old_temp = 9999.0;
-      millis_t now, next_temp_ms = 0, cool_check_ms = 0;
+      millis_t now, cool_check_ms = 0;
       wait_for_heatup = true;
       do {
         // Target temperature might be changed during the loop
@@ -4508,16 +4523,7 @@ void Temperature::isr() {
         now = millis();
         if (ELAPSED(now, next_temp_ms)) { // Print temp & remaining time every 1s while waiting
           next_temp_ms = now + 1000UL;
-          print_heater_states(target_extruder);
-          #if TEMP_RESIDENCY_TIME > 0
-            SString<20> s(F(" W:"));
-            if (residency_start_ms)
-              s += long((SEC_TO_MS(TEMP_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
-            else
-              s += '?';
-            s.echo();
-          #endif
-          SERIAL_EOL();
+          print_heater_states(active_extruder, now, residency_start_ms);
         }
 
         idle();
@@ -4631,7 +4637,7 @@ void Temperature::isr() {
 
       bool wants_to_cool = false;
       celsius_float_t target_temp = -1, old_temp = 9999;
-      millis_t now, next_temp_ms = 0, cool_check_ms = 0;
+      millis_t now, cool_check_ms = 0;
       wait_for_heatup = true;
       do {
         // Target temperature might be changed during the loop
@@ -4646,16 +4652,7 @@ void Temperature::isr() {
         now = millis();
         if (ELAPSED(now, next_temp_ms)) { //Print Temp Reading every 1 second while heating up.
           next_temp_ms = now + 1000UL;
-          print_heater_states(active_extruder);
-          #if TEMP_BED_RESIDENCY_TIME > 0
-            SString<20> s(F(" W:"));
-            if (residency_start_ms)
-              s += long((SEC_TO_MS(TEMP_BED_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
-            else
-              s += '?';
-            s.echo();
-          #endif
-          SERIAL_EOL();
+          print_heater_states(active_extruder, now, residency_start_ms);
         }
 
         idle();
@@ -4758,8 +4755,7 @@ void Temperature::isr() {
         millis_t now = millis();
         if (!next_temp_ms || ELAPSED(now, next_temp_ms)) {
           next_temp_ms = now + 10000UL;
-          print_heater_states(active_extruder);
-          SERIAL_EOL();
+          print_heater_states(active_extruder, now, residency_start_ms);
         }
 
         idle();
@@ -4841,16 +4837,7 @@ void Temperature::isr() {
         now = millis();
         if (ELAPSED(now, next_temp_ms)) { // Print Temp Reading every 1 second while heating up.
           next_temp_ms = now + 1000UL;
-          print_heater_states(active_extruder);
-          #if TEMP_CHAMBER_RESIDENCY_TIME > 0
-            SString<20> s(F(" W:"));
-            if (residency_start_ms)
-              s += long((SEC_TO_MS(TEMP_CHAMBER_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
-            else
-              s += '?';
-            s.echo();
-          #endif
-          SERIAL_EOL();
+          print_heater_states(active_extruder, now, residency_start_ms);
         }
 
         idle();
@@ -4941,16 +4928,7 @@ void Temperature::isr() {
         now = millis();
         if (ELAPSED(now, next_temp_ms)) { // Print Temp Reading every 1 second while heating up.
           next_temp_ms = now + 1000UL;
-          print_heater_states(active_extruder);
-          #if TEMP_COOLER_RESIDENCY_TIME > 0
-            SString<20> s(F(" W:"));
-            if (residency_start_ms)
-              s += long((SEC_TO_MS(TEMP_COOLER_RESIDENCY_TIME) - (now - residency_start_ms)) / 1000UL);
-            else
-              s += '?';
-            s.echo();
-          #endif
-          SERIAL_EOL();
+          print_heater_states(active_extruder, now, residency_start_ms);
         }
 
         idle();
