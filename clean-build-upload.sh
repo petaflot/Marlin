@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEST=$1
+
 # upload works through serial
 #env=mega2560
 
@@ -7,14 +9,14 @@
 #env=STM32G0B1RE_manta_btt
 
 # changes upload to uses correct method to copy file to sdcard
-#env=STM32G0B1RE_manta_btt_xfer	# MANTA M5P
+env=STM32G0B1RE_manta_btt_xfer	# MANTA M5P
+#env=STM32H723ZE_btt	# MANTA M8P
 
-env=STM32H723ZE_btt	# MANTA M8P
 platformio run --target clean -e $env && 
 platformio run -e $env &&
 #platformio run --target upload -e $env
 
-sudo mount -o uid=meta /dev/sdd1 /mnt/sd &&
+sudo mount -o uid=meta ${DEST} /mnt/sd &&
 mv ./.pio/build/${env}/firmware.bin /mnt/sd &&
 ls -l /mnt/sd/* &&
 sudo umount /mnt/sd

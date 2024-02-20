@@ -71,21 +71,22 @@
 //
 #define X_STOP_PIN                    X_DIAG_PIN  // MIN1
 #define Y_STOP_PIN                    Y_DIAG_PIN  // MIN1
-#define Z_STOP_PIN                    Z_DIAG_PIN  // MIN3
+#define Z_STOP_PIN		     PC15
+#define Z_MAX_PIN                    Z_DIAG_PIN  // MIN4
 
 //
 // Z Probe (when not Z_STOP_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN                   PC13  // PROBE
-  //#define Z_MIN_PROBE_PIN                 PC15  // IND-DET (with adjustable pullup set via jumper)
+  //#define Z_MIN_PROBE_PIN                   PC13  // PROBE
+  #define Z_MIN_PROBE_PIN                 Z_STOP_PIN  // IND-DET (with adjustable pullup set via jumper)
 #endif
 
 //
 // Filament Runout Sensor
 //
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN             E0_DIAG_PIN  // MIN4
+  #define FIL_RUNOUT_PIN             E0_DIAG_PIN  // MIN3
 #endif
 
 //
@@ -119,11 +120,11 @@
   #define E0_CS_PIN                         PB2
 #endif
 
-#define E1_STEP_PIN                         PB0
-#define E1_DIR_PIN                          PB1
-#define E1_ENABLE_PIN                       PC4
-#ifndef E1_CS_PIN
-  #define E1_CS_PIN                         PA6
+#define Z2_STEP_PIN                         PB0
+#define Z2_DIR_PIN                          PB1
+#define Z2_ENABLE_PIN                       PC4
+#ifndef Z2_CS_PIN
+  #define Z2_CS_PIN                         PA6
 #endif
 
 //
@@ -335,6 +336,9 @@
   #define NEOPIXEL_PIN                      PC11  // RGB1
 #endif
 
-#ifndef NEOPIXEL2_PIN
-  #define NEOPIXEL2_PIN                     PC14  // RGB2
-#endif
+//#ifndef NEOPIXEL2_PIN
+//  #define NEOPIXEL2_PIN                     PC14  // RGB2
+//#endif
+#define BEEPER_PIN                          PC14  // RGB2
+
+#define WATCHDOG_DURATION_8S
