@@ -38,10 +38,10 @@ PGM_P const tramming_point_name[] PROGMEM = { REPLIST_1(_NR_TRAM_NAMES, _TRAM_NA
 #ifdef ASSISTED_TRAMMING_WAIT_POSITION
 
   // Move to the defined wait position
-  void move_to_tramming_wait_pos() {
-    constexpr xyz_pos_t wait_pos = ASSISTED_TRAMMING_WAIT_POSITION;
+  void move_to_tramming_wait_pos(static uint8_t tram_index) {
+    constexpr xyz_pos_t wait_pos = ASSISTED_TRAMMING_WAIT_POSITION[tram_index];
     if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Moving away");
-    do_blocking_move_to(wait_pos, XY_PROBE_FEEDRATE_MM_S);
+    do_blocking_move_to(wait_pos, ASSISTED_TRAMMING_XY_FEEDRATE);
   }
 
 #endif

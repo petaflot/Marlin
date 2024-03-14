@@ -56,7 +56,7 @@ static bool probe_single_point() {
   const float z_probed_height = probe.probe_at_point(tramming_points[tram_index], PROBE_PT_RAISE);
   z_measured[tram_index] = z_probed_height;
   if (reference_index < 0) reference_index = tram_index;
-  move_to_tramming_wait_pos();
+  move_to_tramming_wait_pos(tram_index);
 
   DEBUG_ECHOLNPGM("probe_single_point(", tram_index, ") = ", z_probed_height, "mm");
 

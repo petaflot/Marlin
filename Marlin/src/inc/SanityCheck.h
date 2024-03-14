@@ -1468,11 +1468,14 @@ static_assert(NUM_SERVOS <= NUM_SERVO_PLUGS, "NUM_SERVOS (or some servo index) i
 
   /**
    * Check for improper NOZZLE_AS_PROBE or NOZZLE_TO_PROBE_OFFSET
+   *
+   * NOTE: if NOZZLE_TO_PROBE_OFFSET is not defined, we can assume NOZZLE_AS_PROBE!
+   * NOTE: if NOZZLE_AS_PROBE is defined, we can ignore NOZZLE_TO_PROBE_OFFSET!
    */
   constexpr xyz_pos_t sanity_nozzle_to_probe_offset = NOZZLE_TO_PROBE_OFFSET;
   #if ENABLED(NOZZLE_AS_PROBE)
-    static_assert(sanity_nozzle_to_probe_offset.x == 0 && sanity_nozzle_to_probe_offset.y == 0,
-                  "NOZZLE_AS_PROBE requires the XY offsets in NOZZLE_TO_PROBE_OFFSET to both be 0.");
+    static_assert(sanity_nozzle_to_probe_offset.x == 0 && sanity_nozzle_to_probe_offset.y == 0 && sanity_nozzle_to_probe_offset.z == 0,
+                  "NOZZLE_AS_PROBE requires the XYZ offsets in NOZZLE_TO_PROBE_OFFSET to all be 0.");
   #endif
   #if HAS_PROBE_XY_OFFSET
     PROBE_OFFSET_ASSERT("NOZZLE_TO_PROBE_OFFSET.x", sanity_nozzle_to_probe_offset.x, PROBE_OFFSET_XMIN, PROBE_OFFSET_XMAX);

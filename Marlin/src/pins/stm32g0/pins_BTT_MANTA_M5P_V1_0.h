@@ -1,3 +1,4 @@
+// vim: noet number
 /**
  * Marlin 3D Printer Firmware
  * Copyright (c) 2023 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
@@ -58,21 +59,12 @@
 #endif
 
 //
-// Trinamic StallGuard pins
-//
-#define X_DIAG_PIN                          PD3   // MIN1
-#define Y_DIAG_PIN                          PD2   // MIN2
-#define Z_DIAG_PIN                          PC3   // MIN3
-#define E0_DIAG_PIN                         PC2   // MIN4
-#define E1_DIAG_PIN                         -1
-
-//
 // Limit Switches
 //
 #define X_STOP_PIN                    X_DIAG_PIN  // MIN1
-#define Y_STOP_PIN                    Y_DIAG_PIN  // MIN1
-#define Z_STOP_PIN		     PC15
-#define Z_MAX_PIN                    Z_DIAG_PIN  // MIN4
+#define Y_STOP_PIN                    Y_DIAG_PIN  // MIN2
+#define Z_STOP_PIN                    PC15
+#define Z_MAX_PIN                     Z_DIAG_PIN  // MIN3
 
 //
 // Z Probe (when not Z_STOP_PIN)
@@ -90,41 +82,47 @@
 #endif
 
 //
-// Steppers
+// Stepper slots, 1-5
 //
-#define X_STEP_PIN                          PC8
-#define X_DIR_PIN                           PC9
-#define X_ENABLE_PIN                        PA15
-#ifndef X_CS_PIN
+#define   X_STEP_PIN                        PC8
+#define   X_DIR_PIN                         PC9
+#define   X_ENABLE_PIN                      PA15
+#define   X_DIAG_PIN                        PD3   // MIN1	Trinamic StallGuard pin
+#ifndef   X_CS_PIN
   #define X_CS_PIN                          PD9
 #endif
 
-#define Y_STEP_PIN                          PA10
-#define Y_DIR_PIN                           PA14
-#define Y_ENABLE_PIN                        PA13
-#ifndef Y_CS_PIN
+#define   Y_STEP_PIN                        PA10
+#define   Y_DIR_PIN                         PA14
+#define   Y_ENABLE_PIN                      PA13
+#define   Y_DIAG_PIN                        PD2   // MIN2	Trinamic StallGuard pin
+#ifndef   Y_CS_PIN
   #define Y_CS_PIN                          PD8
 #endif
 
-#define Z_STEP_PIN                          PC6
-#define Z_DIR_PIN                           PC7
-#define Z_ENABLE_PIN                        PA9
-#ifndef Z_CS_PIN
+#define   Z_STEP_PIN                        PC6
+#define   Z_DIR_PIN                         PC7
+#define   Z_ENABLE_PIN                      PA9
+#define   Z_DIAG_PIN                        PC3   // MIN3	Trinamic StallGuard pin
+#ifndef   Z_CS_PIN
   #define Z_CS_PIN                          PB10
 #endif
 
-#define E0_STEP_PIN                         PB12
-#define E0_DIR_PIN                          PB11
-#define E0_ENABLE_PIN                       PA8
-#ifndef E0_CS_PIN
+#define   E0_STEP_PIN                       PB12
+#define   E0_DIR_PIN                        PB11
+#define   E0_ENABLE_PIN                     PA8
+#define   E0_DIAG_PIN                       PC2   // MIN4	Trinamic StallGuard pin
+#ifndef   E0_CS_PIN
   #define E0_CS_PIN                         PB2
 #endif
 
-#define Z2_STEP_PIN                         PB0
-#define Z2_DIR_PIN                          PB1
-#define Z2_ENABLE_PIN                       PC4
-#ifndef Z2_CS_PIN
-  #define Z2_CS_PIN                         PA6
+// NOTE: see *AUTO_ASSIGN*
+#define   E1_STEP_PIN                       PB0
+#define   E1_DIR_PIN                        PB1
+#define   E1_ENABLE_PIN                     PC4
+#define   E1_DIAG_PIN                       -1	  // Trinamic StallGuard pin not present ; could be PC13 (hardware mod required)
+#ifndef   E1_CS_PIN
+  #define E1_CS_PIN                         PA6
 #endif
 
 //
