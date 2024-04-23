@@ -833,8 +833,6 @@ void CardReader::report_status() {
     SERIAL_CHAR('/');
     SERIAL_ECHOLN(filesize);
   }
-  else
-    SERIAL_ECHOLNPGM(STR_SD_NOT_PRINTING);
 }
 
 void CardReader::write_command(char * const buf) {

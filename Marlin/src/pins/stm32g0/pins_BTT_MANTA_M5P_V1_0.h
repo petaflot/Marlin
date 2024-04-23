@@ -116,13 +116,13 @@
   #define E0_CS_PIN                         PB2
 #endif
 
-// NOTE: see *AUTO_ASSIGN*
-#define   E1_STEP_PIN                       PB0
-#define   E1_DIR_PIN                        PB1
-#define   E1_ENABLE_PIN                     PC4
-#define   E1_DIAG_PIN                       -1	  // Trinamic StallGuard pin not present ; could be PC13 (hardware mod required)
-#ifndef   E1_CS_PIN
-  #define E1_CS_PIN                         PA6
+// NOTE: see *AUTO_ASSIGN* (can cause trouble!)
+#define   Z2_STEP_PIN                       PB0
+#define   Z2_DIR_PIN                        PB1
+#define   Z2_ENABLE_PIN                     PC4
+#define   Z2_DIAG_PIN                       -1	  // Trinamic StallGuard pin not present ; could be PC13? (hardware mod required)
+#ifndef   Z2_CS_PIN
+  #define Z2_CS_PIN                         PA6
 #endif
 
 //
